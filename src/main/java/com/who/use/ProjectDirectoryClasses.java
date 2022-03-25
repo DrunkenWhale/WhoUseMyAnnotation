@@ -8,8 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 public class ProjectDirectoryClasses {
@@ -51,9 +55,26 @@ public class ProjectDirectoryClasses {
     private static List<String> getAllClassesFullNameInProjectDirectory() throws IOException {
 
         List<String> list = new LinkedList<>();
-        String classesPath = System.getProperty("java.class.path").split(";")[0];
-        int classesPathLength = classesPath.length();
-        Files.walkFileTree(Path.of(new File(classesPath).toURI()), new SimpleFileVisitor<>() {
+        Arrays.stream(System.getProperty("java.class.path").split(";")).forEach(path -> {
+            try {
+                if (path.endsWith(".jar")) {
+                    list.addAll(getAllClassesInSpecialJarPath(path));
+                } else {
+                    list.addAll(getAllClassesInSpecialDirectoryPath(path));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return list;
+
+    }
+
+    private static List<String> getAllClassesInSpecialDirectoryPath(String path) throws IOException {
+        List<String> list = new LinkedList<>();
+        int classesPathLength = path.length();
+        Files.walkFileTree(Path.of(new File(path).toURI()), new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 String absPath = file.toString();
@@ -64,6 +85,23 @@ public class ProjectDirectoryClasses {
             }
         });
         return list;
+    }
 
+    private static List<String> getAllClassesInSpecialJarPath(String jarPath) throws IOException {
+        List<String> list = new LinkedList<>();
+        if (jarPath.endsWith(".jar")) {
+            System.out.println(jarPath);
+            JarFile jarFile = new JarFile(jarPath);
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry jarEntry = entries.nextElement();
+                String jarClassPath = jarEntry.getName();
+                if (!jarEntry.isDirectory() && jarClassPath.endsWith(".class") && !jarClassPath.contains("module-info")) {
+                    String classPath = jarClassPath.substring(0, jarClassPath.length() - 6).replace("/", ".");
+                    list.add(classPath);
+                }
+            }
+        }
+        return list;
     }
 }
