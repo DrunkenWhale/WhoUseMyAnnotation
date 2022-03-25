@@ -11,7 +11,7 @@ So, who ~~steal~~ use my annotation?
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@Retention(RetentionPolicy.RUNTIME) // RUNTIME / CLASS ,don't use SOURCE!
+@Retention(RetentionPolicy.RUNTIME) // RUNTIME ,don't use SOURCE / CLASS!
 public @interface Scala {
     boolean better() default true;
 }
