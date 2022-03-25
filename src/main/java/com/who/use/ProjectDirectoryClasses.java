@@ -90,7 +90,6 @@ public class ProjectDirectoryClasses {
     private static List<String> getAllClassesInSpecialJarPath(String jarPath) throws IOException {
         List<String> list = new LinkedList<>();
         if (jarPath.endsWith(".jar")) {
-            System.out.println(jarPath);
             JarFile jarFile = new JarFile(jarPath);
             Enumeration<JarEntry> entries = jarFile.entries();
             while (entries.hasMoreElements()) {
