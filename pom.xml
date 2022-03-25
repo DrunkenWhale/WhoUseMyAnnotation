@@ -7,6 +7,14 @@
     <groupId>com.who.use</groupId>
     <artifactId>WhoUseMyAnnotation</artifactId>
     <version>0.0.0-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
