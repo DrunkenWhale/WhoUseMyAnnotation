@@ -52,7 +52,7 @@ public class ProjectDirectoryClasses {
         }
     }
 
-    private static List<String> getAllClassesFullNameInProjectDirectory() throws IOException {
+    private static List<String> getAllClassesFullNameInProjectDirectory() {
 
         List<String> list = new LinkedList<>();
         Arrays.stream(System.getProperty("java.class.path").split(";")).forEach(path -> {
